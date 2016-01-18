@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,7 +11,6 @@ namespace Escc.Umbraco.RecycleBinManager.Controllers
     [Authorize]
     public class RecycleBinApiController : UmbracoApiController
     {
-        private int _noOfDaysOlderThan;
         // UmbracoApiController exposes:
         // ApplicationContext ApplicationContext { get; }
         // ServiceContext Services { get; }
@@ -18,34 +18,24 @@ namespace Escc.Umbraco.RecycleBinManager.Controllers
         // UmbracoHelper Umbraco { get; }
         // UmbracoContext UmbracoContext { get; }
 
-        //private readonly IContentService _contentService;
+        private readonly int _noOfDaysOlderThan;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="noOfDaysOlderThan">
-        /// 
-        /// </param>
-        /// <returns>
-        /// 
-        /// </returns>
+        public RecycleBinApiController()
+        {
+            // Read number of days value from web.config
+            var daysOlderThanStr = ConfigurationManager.AppSettings["CleanRecycleBinsDaysOlderThan"];
+
+            // convert to an Integer, default to 0 on error.
+            int.TryParse(daysOlderThanStr, out _noOfDaysOlderThan);
+        }
+
         [HttpGet]
         [HttpPost]
-        public HttpResponseMessage CleanRecycleBins(int noOfDaysOlderThan)
+        public HttpResponseMessage CleanRecycleBins()
         {
             try
             {
-                _noOfDaysOlderThan = noOfDaysOlderThan;
-
-                // Check that the correct credentials have been supplied
-                //var content = Request.Content.ReadAsStringAsync().Result;
-                //if (!Authentication.AuthenticateUser(content))
-                //{
-                //    return Request.CreateResponse(HttpStatusCode.Forbidden);
-                //}
-
-                // OK, carry on
-                return DeleteOldRecycleBinContent();
+                return DeleteOldRecycleBinContent(_noOfDaysOlderThan);
             }
             catch (Exception ex)
             {
@@ -54,31 +44,33 @@ namespace Escc.Umbraco.RecycleBinManager.Controllers
         }
 
         /// <summary>
-        /// Delete items in Content and Media recycle bins that are older than the number of days
-        /// defined in web.config.
+        /// Delete items in Content and Media recycle bins that are older than the number of days passed in
         /// </summary>
         /// <returns></returns>
-        private HttpResponseMessage DeleteOldRecycleBinContent()
+        private HttpResponseMessage DeleteOldRecycleBinContent(int noOfDaysOlderThan)
         {
-            var triggerDate = DateTime.Now.AddDays(_noOfDaysOlderThan * -1);
+            // a value of 0 (zero) means "do nothing"
+            if (noOfDaysOlderThan <= 0) return Request.CreateResponse(HttpStatusCode.OK);
+
+            var triggerDate = DateTime.Now.AddDays(noOfDaysOlderThan * -1);
 
             // Content section Recycle Bin
-            var contentNodes = Services.ContentService.GetContentInRecycleBin().Where(n => n.UpdateDate > triggerDate);
+            var contentNodes = Services.ContentService.GetContentInRecycleBin().Where(n => n.UpdateDate <= triggerDate);
 
             foreach (var node in contentNodes)
             {
-                //Services.ContentService.Delete(node);
+                Services.ContentService.Delete(node);
             }
 
             // Media section Recycle Bin
-            var mediaNodes = Services.MediaService.GetMediaInRecycleBin().Where(n => n.UpdateDate > triggerDate);
+            var mediaNodes = Services.MediaService.GetMediaInRecycleBin().Where(n => n.UpdateDate <= triggerDate);
 
             foreach (var node in mediaNodes)
             {
-                //Services.MediaService.Delete(node);
+                Services.MediaService.Delete(node);
             }
 
-            return null;
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
     }
 }
