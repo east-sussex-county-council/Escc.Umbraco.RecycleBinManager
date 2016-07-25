@@ -4,15 +4,15 @@
 # local:   https://hostname/umbraco/api/RecycleBinApi/CleanRecycleBins
 # ===================================
 $URL="https://hostname/umbraco/api/RecycleBinApi/CleanRecycleBins"
+$user = "example"
+$pass = "example"
 
-$NVC = New-Object System.Collections.Specialized.NameValueCollection
-$NVC.Add('apiuser', 'example');
-$NVC.Add('apikey', 'example');
+$pair = "${user}:${pass}"
+$bytes = [System.Text.Encoding]::ASCII.GetBytes($pair)
+$base64 = [System.Convert]::ToBase64String($bytes)
+$basicAuthValue = "Basic $base64"
+$headers = @{ Authorization = $basicAuthValue }
 
-$WC = New-Object System.Net.WebClient
-$WC.UseDefaultCredentials = $true
-$Result = $WC.UploadValues($URL,"post", $NVC);
-
-[System.Text.Encoding]::UTF8.GetString($Result)
-$WC.Dispose();
+$ProgressPreference = "SilentlyContinue"
+Invoke-RestMethod -uri $URL -Headers $headers -TimeoutSec 1200
 
