@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Escc.Umbraco.RecycleBinManager", "Escc.Umbraco.RecycleBinManager\Escc.Umbraco.RecycleBinManager.csproj", "{1FFB2525-D5EE-41C2-A5AF-CDC0932FADBA}"
-EndProject
-Project("{E09DD79A-4488-4AB9-8D3F-A7EEE78BF432}") = "Escc.Umbraco.RecycleBinManager.NuGet", "Escc.Umbraco.RecycleBinManager.NuGet\Escc.Umbraco.RecycleBinManager.NuGet.nuproj", "{BBFEC5B0-BF79-4502-A141-52D893E6DE94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,12 +15,11 @@ Global
 		{1FFB2525-D5EE-41C2-A5AF-CDC0932FADBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FFB2525-D5EE-41C2-A5AF-CDC0932FADBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FFB2525-D5EE-41C2-A5AF-CDC0932FADBA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BBFEC5B0-BF79-4502-A141-52D893E6DE94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BBFEC5B0-BF79-4502-A141-52D893E6DE94}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BBFEC5B0-BF79-4502-A141-52D893E6DE94}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BBFEC5B0-BF79-4502-A141-52D893E6DE94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DB6F6454-2084-45B4-8F92-6BD9C54CAEBC}
 	EndGlobalSection
 EndGlobal

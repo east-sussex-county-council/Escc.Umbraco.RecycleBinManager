@@ -4,20 +4,15 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Exceptionless;
+using Umbraco.Core.Logging;
 using Umbraco.Web.WebApi;
 
-namespace Escc.Umbraco.RecycleBinManager.Controllers
+namespace Escc.Umbraco.RecycleBinManager
 {
     [Authorize]
     public class RecycleBinApiController : UmbracoApiController
     {
-        // UmbracoApiController exposes:
-        // ApplicationContext ApplicationContext { get; }
-        // ServiceContext Services { get; }
-        // DatabaseContext DatabaseContext { get; }
-        // UmbracoHelper Umbraco { get; }
-        // UmbracoContext UmbracoContext { get; }
-
         private readonly int _noOfDaysOlderThan;
 
         public RecycleBinApiController()
@@ -39,6 +34,8 @@ namespace Escc.Umbraco.RecycleBinManager.Controllers
             }
             catch (Exception ex)
             {
+                LogHelper.Error(GetType(), ex.Message, ex);
+                ex.ToExceptionless().Submit();
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex);
             }
         }
